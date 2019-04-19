@@ -19,7 +19,6 @@ void string_write(char *data, Linlist_string *list)
         list->last = elem;
         elem->prev->next = elem;
     }
-    return;
 }
 
 char* string_read(Linlist_string *list)
@@ -34,7 +33,7 @@ char* string_read(Linlist_string *list)
     }
     return ret;
 }
-void int_write(int* data, Linlist_int *list)
+void int_write(const int* data, Linlist_int *list)
 {
     Int_elem *elem = malloc(sizeof(Int_elem));
     elem->data = malloc(sizeof(int));
@@ -53,7 +52,6 @@ void int_write(int* data, Linlist_int *list)
         list->last = elem;
         elem->prev->next = elem;
     }
-    return;
 }
 int *int_read(Linlist_int *list)
 {

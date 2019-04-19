@@ -29,7 +29,7 @@ typedef struct {
     Int_elem* first;
     Int_elem* last;
 } Linlist_int;
-void int_write(int* data, Linlist_int *list);
+void int_write(const int* data, Linlist_int *list);
 int *int_read(Linlist_int *list);
 
 void string_write(char *data, Linlist_string *list);

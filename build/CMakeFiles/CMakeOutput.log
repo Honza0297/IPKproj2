@@ -268,3 +268,18 @@ gmake[1]: Opouští se adresář „/home/Honza0297/CLionProjects/IPKproj2/build
     Feature record: C_FEATURE:0c_restrict
     Feature record: C_FEATURE:0c_static_assert
     Feature record: C_FEATURE:0c_variadic_macros
+Performing C SOURCE FILE Test PCAP_LINKS_SOLO succeeded with the following output:
+Change Dir: /home/Honza0297/CLionProjects/IPKproj2/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake cmTC_9bc9b/fast 
+/usr/bin/gmake -f CMakeFiles/cmTC_9bc9b.dir/build.make CMakeFiles/cmTC_9bc9b.dir/build
+gmake[1]: Vstupuje se do adresáře „/home/Honza0297/CLionProjects/IPKproj2/build/CMakeFiles/CMakeTmp“
+Building C object CMakeFiles/cmTC_9bc9b.dir/src.c.o
+/usr/bin/cc   -DPCAP_LINKS_SOLO   -std=gnu99 -o CMakeFiles/cmTC_9bc9b.dir/src.c.o   -c /home/Honza0297/CLionProjects/IPKproj2/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_9bc9b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9bc9b.dir/link.txt --verbose=1
+/usr/bin/cc  -DPCAP_LINKS_SOLO    CMakeFiles/cmTC_9bc9b.dir/src.c.o  -o cmTC_9bc9b /usr/lib64/libpcap.so 
+gmake[1]: Opouští se adresář „/home/Honza0297/CLionProjects/IPKproj2/build/CMakeFiles/CMakeTmp“
+
+Source file was:
+int main() { return 0; }
