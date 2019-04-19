@@ -8,6 +8,7 @@
 #include <netdb.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
+#include <netinet/ip_icmp.h>
 #include <netinet/udp.h>
 #include <ifaddrs.h>
 #include <arpa/inet.h>
@@ -306,25 +307,67 @@ void set_tcp_header(struct tcphdr *tcp_header, int port, struct sockaddr_in send
 
 }
 
-void set_ip_header(struct ip *ip_header, char *src_addr, char *dst_addr, int size)
+void set_ip_header(struct ip *ip_header, char *src_addr, char *dst_addr, int size, int tcp)
 {
     //ip header here
     ip_header->ip_v = 4;
     ip_header->ip_hl = sizeof*ip_header >> 2;
     ip_header->ip_tos = 0;
     ip_header->ip_len = htons(size);//celkova velikost paketu
-    ip_header->ip_id = htons(34565);
+    ip_header->ip_id = htons(36458);
     ip_header->ip_off = htons(0);
     ip_header->ip_ttl = 255;
-    ip_header->ip_p = IPPROTO_TCP;
+    if(tcp)
+        ip_header->ip_p = IPPROTO_TCP;
+    else
+        ip_header->ip_p = IPPROTO_UDP;
     ip_header->ip_sum = 0;
 
-    ip_header->ip_src.s_addr = inet_addr(src_addr); //todo overit spravnost
-    ip_header->ip_dst.s_addr = inet_addr(dst_addr); //-//-
+    ip_header->ip_src.s_addr = inet_addr(src_addr);
+    ip_header->ip_dst.s_addr = inet_addr(dst_addr);
 
-    ip_header->ip_sum = csum((unsigned short *)ip_header, size); //druhá možnost: velikost iphlavy + tcphlavy
+    ip_header->ip_sum = csum((unsigned short *)ip_header, size); //druhá možnost: velikost iphlavy + protokolhlavy
 
 }
+//http://minirighi.sourceforge.net/html/udp_8c-source.html
+uint16_t udp_checksum(const void *buff, size_t len, in_addr_t src_addr, in_addr_t dest_addr)
+ {
+         const uint16_t *buf=buff;
+         uint16_t *ip_src=(void *)&src_addr, *ip_dst=(void *)&dest_addr;
+         uint32_t sum;
+         size_t length=len;
+
+         // Calculate the sum                                            //
+         sum = 0;
+         while (len > 1)
+         {
+                 sum += *buf++;
+                 if (sum & 0x80000000)
+                         sum = (sum & 0xFFFF) + (sum >> 16);
+                 len -= 2;
+         }
+
+         if ( len & 1 )
+                 // Add the padding if the packet lenght is odd          //
+                 sum += *((uint8_t *)buf);
+
+         // Add the pseudo-header                                        //
+         sum += *(ip_src++);
+         sum += *ip_src;
+
+         sum += *(ip_dst++);
+         sum += *ip_dst;
+
+         sum += htons(IPPROTO_UDP);
+         sum += htons(length);
+
+         // Add the carries                                              //
+         while (sum >> 16)
+                 sum = (sum & 0xFFFF) + (sum >> 16);
+
+       // Return the one's complement of sum                           //
+         return ( (uint16_t)(~sum)  );
+ }
 
 int main(int argc, char** argv )
 {
@@ -355,7 +398,7 @@ int main(int argc, char** argv )
     char* src_addr = get_src_addr(interface_name, mask);
     printf("dst: %s, src: %s, mask: %s\n", dst_addr, src_addr, mask);
 
-
+    //start TCP scanning
     int sock = socket(PF_INET, SOCK_RAW, IPPROTO_TCP);
     if(sock <0)
     {
@@ -371,7 +414,8 @@ int main(int argc, char** argv )
     //starts to scan TCP sockets
     int * port = int_read(TCP_range);
     char *str_port = string_read(string_TCP_range);
-    while(port != NULL && str_port != NULL)
+
+    while(port != NULL && str_port != NULL) //main cycle, here, all ports are scanned. New pacekt created every time.
     {
         int size = (sizeof(struct ip) + sizeof(struct tcphdr)) * sizeof(char);
         char packet[size];
@@ -381,14 +425,13 @@ int main(int argc, char** argv )
         struct sockaddr_in sendto_src;
         struct pseudo_header pseudo;
 
-
+        //structure to identify source == myself
         sendto_src.sin_addr.s_addr = inet_addr(dst_addr); //src address
         sendto_src.sin_family = AF_INET;
         sendto_src.sin_port = htons(46666); //port from which i send packets
 
 
-        set_ip_header(ip_header, src_addr, dst_addr, size);
-      // printf("scanning port %d\n", *port);
+        set_ip_header(ip_header, src_addr, dst_addr, size,1);
         set_tcp_header(tcp_header, *port, sendto_src);
 
 
@@ -405,8 +448,7 @@ int main(int argc, char** argv )
         memcpy(pseudogram + sizeof(struct pseudo_header) , tcp_header , sizeof(struct tcphdr));
         tcp_header->check = checksum2((const char*) pseudogram , pseudo_size);
 
-
-
+        //prepare PCAP
         char errbuf[PCAP_ERRBUF_SIZE];
         pcap_handle = pcap_open_live(interface_name, 65500, 0, 100, errbuf);
         if(pcap_handle == NULL)
@@ -421,11 +463,8 @@ int main(int argc, char** argv )
         //setting the rule: src port has to be the same
         char rule[9+5+1]= "src port ";
         strcat(rule, str_port);
-
         struct bpf_program *filter=(struct bpf_program *)malloc(sizeof(struct bpf_program));;
         pcap_compile(pcap_handle ,filter, rule, 0, pcap_net);
-
-
         if(err)
         {
             printf("err during pcap compile. %d", err);
@@ -440,54 +479,169 @@ int main(int argc, char** argv )
         struct pcap_pkthdr *header = (struct pcap_pkthdr *)malloc(sizeof(struct pcap_pkthdr ));
         const  u_char *arrived_packet;
 
-
-        for (int i = 0; i < 1; ++i) {
-            if(sendto(sock, packet, sizeof(packet), 0, (struct sockaddr *)&sendto_src, sizeof(sendto_src)) < 0)
+        if(sendto(sock, packet, sizeof(packet), 0, (struct sockaddr *)&sendto_src, sizeof(sendto_src)) < 0)
+        {
+            perror("sendto err\n");
+        }
+        while(42)
+        {
+            alarm(1);
+            signal(SIGALRM, alarm_handler);
+            arrived_packet = pcap_next(pcap_handle, header);
+            if(arrived_packet)
             {
-                perror("sendto err\n");
-            }
-            while(42)
-            {
-                alarm(1);
-                signal(SIGALRM, alarm_handler);
-                arrived_packet = pcap_next(pcap_handle, header);
-                if(arrived_packet)
+                printf("Packet arrived! %d\n", header->len);
+                //struct sniff_ethernet*eth_h = (struct sniff_ethernet*)(arrived_packet);
+                struct ip*sniffed_ip = (struct ip*)(arrived_packet+ 14); //14 == sizeof(sniff_eth)
+                struct tcphdr* sniffed_tcp = (struct tcphdr*)(arrived_packet+14+ sizeof(struct ip));
+                char * s_ip = malloc(sizeof(char)*39);
+                inet_ntop(AF_INET, &(sniffed_ip->ip_src), s_ip, 39);
+                printf("sniffed IP: %s, tcp ack: %u, bla :) %u %u\n",s_ip, sniffed_tcp->ack, sniffed_tcp->source, tcp_header->dest);
+                if(sniffed_tcp->source == tcp_header->dest)
                 {
-                    printf("Packet arrived! %d\n", header->len);
-                    struct sniff_ethernet*eth_h = (struct sniff_ethernet*)(arrived_packet);
-                    struct ip*sniffed_ip = (struct ip*)(arrived_packet+ 14); //14 == sizeof(sniff_eth)
-                    struct tcphdr* sniffed_tcp = (struct tcphdr*)(arrived_packet+14+ sizeof(struct ip));
-                    char * s_ip = malloc(sizeof(char)*39);
-                    inet_ntop(AF_INET, &(sniffed_ip->ip_src), s_ip, 39);
-                    printf("sniffed IP: %s, tcp ack: %u, bla :) %u %u\n",s_ip, sniffed_tcp->ack, sniffed_tcp->source, tcp_header->dest);
-                    if(sniffed_tcp->source == tcp_header->dest)
+                    if(sniffed_tcp->ack && !sniffed_tcp->rst)
                     {
-                        if(sniffed_tcp->ack && !sniffed_tcp->rst)
-                        {
-                            printf("%d tcp: open\n", *port);
-                            break;
-                        }
-                        else
-                        {
-                            printf("%d tcp: closed\n", *port);
-                            break;
-                        }
+                        printf("%d tcp: open\n", *port);
+                        break;
+                    }
+                    else
+                    {
+                        printf("%d tcp: closed\n", *port);
+                        break;
                     }
                 }
-                else
-                {
-                    printf("%d tcp: filtered\n", *port);
-                    break;
-                }
-            }//end of while42
+            }
+            else
+            {
+                printf("%d tcp: filtered\n", *port);
+                break;
+            }
+        }//end of while42
             pcap_close(pcap_handle);
-        }
+
         //set new ports for next cycle
          port = int_read(TCP_range);
          str_port = string_read(string_TCP_range);
     }
+    close(sock); //end of TCP scanning
+
+    int udp_size = (sizeof(struct ip) + sizeof(struct udphdr)) * sizeof(char);
+    char datagram[udp_size];
+    memset (datagram, 0, udp_size);
+    struct ip* ip_header = (struct ip*)datagram;
+    struct udphdr*udp = (struct udphdr *) (datagram + sizeof(struct ip));
+    set_ip_header(ip_header, src_addr, dst_addr, udp_size, 0);
+
+
+    //there are two implementations of udphdr:
+    // source/uh_sport
+    // dest/uh_dport
+    // len/uh_len
+    //check/uh_sum
+    udp->source= htons(46666);
+    udp->dest = htons(1000); //TODO tohle menit
+    //printf("delka: %d", sizeof(struct udphdr));
+    udp->len = htons(sizeof(struct udphdr));
+    udp->check = udp_checksum(udp, sizeof(struct udphdr), inet_addr(src_addr), inet_addr(dst_addr));
 
 
 
+
+    sock = socket(PF_INET, SOCK_RAW, IPPROTO_UDP);
+    if(sock < 0)
+    {
+        exit(43);
+    }
+    int recvsock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+    if(recvsock < 0)
+    {
+        exit(43);
+    }
+
+    if(setsockopt(sock, IPPROTO_IP, IP_HDRINCL, &one, sizeof(one)) < 0)
+    {
+        perror("setsockopt() error");
+        exit(-1);
+    }
+    else
+
+        printf("setsockopt() is OK.\n");
+
+    struct sockaddr_in sendto_src;
+    //structure to identify source == myself
+    sendto_src.sin_addr.s_addr = inet_addr(dst_addr); //src address
+    sendto_src.sin_family = AF_INET;
+    sendto_src.sin_port = htons(46666); //port from which i send packets
+
+    //prepare PCAP
+    char errbuf[PCAP_ERRBUF_SIZE];
+    pcap_handle = pcap_open_live(interface_name, 65500, 0, 100, errbuf);
+    if(pcap_handle == NULL)
+    {
+        printf("ERR during creating pcap_handle");
+        exit(43);
+    }
+    bpf_u_int32 pcap_mask;
+    bpf_u_int32 pcap_net;
+    pcap_lookupnet(interface_name, &pcap_net, &pcap_mask, errbuf);
+
+    //setting the rule: src port has to be the same
+    char rule[9+5+1]= "ip proto \\icmp";
+    //strcat(rule, str_port);
+    struct bpf_program *filter=(struct bpf_program *)malloc(sizeof(struct bpf_program));;
+    pcap_compile(pcap_handle ,filter, rule, 0, pcap_net);
+    if(err)
+    {
+        printf("err during pcap compile. %d", err);
+        exit(43);
+    }
+    err = pcap_setfilter(pcap_handle,filter);
+    if(err == -1)
+    {
+        printf("err during pcap set filter.");
+        exit(43);
+    }
+    struct pcap_pkthdr *header = (struct pcap_pkthdr *)malloc(sizeof(struct pcap_pkthdr ));
+    const  u_char *arrived_packet;
+    if(sendto(sock, datagram, sizeof(datagram), 0, (struct sockaddr *)&sendto_src, sizeof(sendto_src)) < 0)
+    {
+        perror("sendto err\n");
+    }
+
+    int second = 0;
+    while(42)
+    {
+        alarm(1);
+        signal(SIGALRM, alarm_handler);
+        arrived_packet = pcap_next(pcap_handle, header);
+        if(arrived_packet)
+        {
+            printf("ICMP Packet arrived! %d\n", header->len);
+            break;
+        }
+        else
+        {
+            if(second)
+            {
+                //druhe odeslani bez nalezeni paketu, open/filtered
+                printf("open or filtered?\n");
+                break;
+            }
+            else
+            {
+                printf("gimme second chance!\n");
+                second = 1;
+                if(sendto(sock, datagram, sizeof(datagram), 0, (struct sockaddr *)&sendto_src, sizeof(sendto_src)) < 0)
+                {
+                    perror("sendto err\n");
+                }
+            }
+
+
+        }
+
+    }
+    pcap_close(pcap_handle);
+//todo sendto_src prejmenovat na sendto dst
     exit(42);
 }
