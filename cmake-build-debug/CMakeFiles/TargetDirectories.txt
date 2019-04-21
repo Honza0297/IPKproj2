@@ -1,3 +1,0 @@
-/home/Honza0297/CLionProjects/IPKproj2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/Honza0297/CLionProjects/IPKproj2/cmake-build-debug/CMakeFiles/IPKproj2.dir
-/home/Honza0297/CLionProjects/IPKproj2/cmake-build-debug/CMakeFiles/edit_cache.dir

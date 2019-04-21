@@ -1,0 +1,89 @@
+\documentclass[a4paper, 11pt]{article}
+
+\usepackage[czech]{babel}
+\usepackage{times}
+\usepackage[text={17cm,24cm}, top=2cm, left=2cm, right=2cm, bottom=3cm]{geometry}
+\usepackage[utf8]{inputenc}
+\setlength{\headheight}{20.0mm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{graphics}
+\usepackage {array}
+\usepackage{pdflscape}
+\usepackage[czech, ruled, vlined, linesnumbered, longend, noline]{algorithm2e}
+\usepackage{multirow}
+
+
+\begin{document}
+\catcode`\-=12 %Mělo by to vyřešit problém s cline... jestli ne, tak už nevím
+%Uvodni strana
+\begin{titlepage}
+	\begin{center}
+		\Huge \textsc{Vysoké učení technické v~Brně}\\
+		\huge \textsc{Fakulta informačních technologií}\\
+		\vspace{\stretch{0,190}}
+		\begin{figure}[h]
+		\begin{center}
+		\scalebox{0.85}{\includegraphics{logo.png}}
+		\end{center}
+		\end{figure}
+
+		\vspace{\stretch{0,190}}
+		\LARGE Druhý projekt do předmětu IPK \\
+		\Huge {Jednoduchý portový skener}\\
+		\vspace{\stretch{0,620}}
+		
+		
+		\Large Beran Jan \texttt{xberan43} \hspace{\stretch{0,5}} \Large\today\\
+	 \end{center}
+\end{titlepage}
+\tableofcontents
+
+\newpage
+\section{Zadání projektu}
+Zadáním projektu bylo vytvořit jednoduchý skener TCP/UDP portů pomocí BSD soketů. Zadání dále specifikovalo použitý jazyk; jazyk C. Podrobnější informace (specifikace principu skenování) v sekci \uv{Podrobnější popis principu skenování na základě zadání projektu}.
+\section{Teorie}
+V následujících sekcích se nachází stručně shrnuté teoretické informace, na jejichž základě byl projekt vypracován.
+\subsection{Protokol IP}
+Protokol IP je protokolem síťové vrstvy. Využívá ho celá rodina protokolů TCP/IP. Sám protokol IP negarantuje doručení paketu a je tedy nespolehlivý. Pro podrobnější informace doporučuji \cite{rfc791}.
+\subsection{Protokol TCP}
+Protokol TCP je protokolem transportní vrstvy. Vyznačuje se mj. tím, že je spolehlivý; zaručuje, že se data od odesílatele dostanou k příjemci. Při navazování spojení probíhá tzv \uv{three-way handshake}, kdy nejprve klient zasílá TCP paket s příznakem SYN serveru (žádá o spojení), server odpovídá TCP paketem s příznaky SYN a ACK (potvrzuje spojení), RST a ACK (zamítá spojení) nebo neodešle žádnou reakci (filtruje = ignoruje spojení na daném portu). Klient poté zasílá TCP paket s příznakem ACK, kdy potvrzuje ustanovené spojení.\\
+Informace byly získávány z přednášek IPK a následujícíh zdrojů: \cite{rfc793}, \cite{Donahoo:TCPIP}.  
+\subsection{Protokol UDP}
+Protokol UDP je stejně jako TCP protokolem transportní vrstvy. Na rozdíl od TCP je ale přenos tímto protokolem nespolehlivý; není garantováno, že informace bude doručena.\\
+Pro podrobnější popis protokolu UDP viz \cite{rfc768}.\\
+\subsection{Podrobnější popis principu skenování na základě zadání projektu}
+Při skenování TCP portů se nevyužívá kompletní \uv{three-way handshake}, ale pouze první dvě jeho části, které již stačí k identifikaci stavu portu (při otevřeném portu je zaslán potvrzující paket, při zavřeném odmítací a při filtrovaném portu nepřijde žádná odpověď).\\
+Při skenování UDP portů se využívá jiného principu: zavřený port se detekuje tak, že server (obecně druhá strana komunikace) odešla paket protokolu ICMP typu 3, kódu 3. Pokud ze strany serveru žádná odpověď nepřijde, je znovu odeslán UDP paket na daný port. Pokud ani napodruhé nepřijde žádná reakce, je port prohlášen za otevřený nebo filtrovaný (tyto dva stavy nelze odlišit).
+\section{Implementace}
+V následující sekci je popsán průběh implementace a testování projektu.
+\subsection{Struktura kódu a princip činnosti}
+Program nejprve zpracuje vstupní argumenty a čísla portů pro UDP a TCP skenování zřetězí do lineárních seznamů. V cyklu dále proběhne skenování TCP portů a nasládně UDP portů (pokud byl pro daný protokol zadán alespoň jeden port).\\
+Pro odchytávání příchozí komunikace slouží knihovna pcap.h (informace čerpány z \cite{pcap}), konkrétně funkce \texttt{pcap\_next}. Zde bylo nutno řešit problém, kdy \texttt{pcap\_next} donekonečna čeká na odpověď serveru, která ale nikdy přijít nemusí (příkladem budiž otevřený/filtrovaný port při UDP skenování). Tento problém byl vyřešen nastavením alarmu a následným zasláním signálu \texttt{SIGALRM}, po jehož vyvolání dojde k vyvolání funkce \texttt{pcap\_breakloop}, která přeruší vnitřní smyčku uvnitř funkce \texttt{pcap\_next} a dojde k \uv{odseknutí} programu \cite{breakloop}.  
+\subsection{Přejaté části kódu}
+Pro generování kontrolního součtu byly použité funkce volně dostupné na internetu; konkrétně funkce csum byla přejata z \cite{RawSocket}, udp\_checksum z \cite{Checksum} a checksum2 z \cite{checksum2}. Tímto děkuji všem autorům, kteří tyto skvělé funkce vytvořili.\\
+\subsection{Testování a porovnání s programem nmap}
+Projekt nebyl testován žádným testovacím rámcem, všechno testování probíhalo ručně. Pro vizualizaci přenosu paketů byl použit program Wireshark, pro kontrolu správnosti skenování program nmap.\\
+Při porovnání s programem nmap je ve skenování UDP portů program nmap o něco rychlejší To je pravděpodobně způsobeno jiným principem zachytávání komunikace, kdy můj program čeká jednu vteřinu po každém odeslání UDP paketu a až následně pokračuje v činnosti.\\
+Při TCP skenování odesílá program nmap pakety s nastavenými přepínači v části\uv{TCP Options} v TCP hlavičce, zde popisovaný program toto nedělá, ale funkcionalita je v této oblasti totožná.
+\subsection{Neimplementované části}
+Projekt není plně funkční, chybí mu podpora skenování serverů s IP adresou verze 6.
+\section{Použití}
+Program byl testován na referenčním stroji a OS Fedora 29 (zde byla nutnost doinstalovat knihovnu pcap.h). Pro přeložení stačí využít přiložený Makefile.\\
+Pogram se spouští s následujícími parametry:
+\begin{itemize}
+	\item --i interface: specifikace rozhraní, které bude využito pro skenování. Volitelný parametr, při jeho absenci se využívá první vhodné rozhraní. 
+	\item --pu ports: specifikuje UDP porty pro skenování. 
+	\item --pt ports: specifikuje TCP porty pro skenování.
+	\item posledním parametrem při spouštění programu je doménové jméno nebo IP adresa. Tento parametr je povinný. 
+\end{itemize}
+Vždy musí být zadáno doménové jméno nebo IP adresa a alespoň jedne z přepínačů --pt nebo --pu.\\ 
+Po správném spuštění program oskenuje zadané porty a výsledek skenování vypíše na standardní výstup. V případě chyby se ukončí.
+\section{Závěr}
+Byl provedeno teoretické nastudování problematiky vytváření, odesílání a zachytávání paketů při TCP a UDP skenování. Po skončení této fáze byl naimplementován skener TCP a UDP portů, který částečně odpovídá zadání. Podpora IPv6 bohužel není implementována.\\
+\newpage % Použité zdroje
+\bibliographystyle{czechiso}
+\def\refname{Použité zdroje}
+\bibliography{citaceIPK}
+ 
+\end{document}

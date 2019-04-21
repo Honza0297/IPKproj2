@@ -17,7 +17,6 @@
 
 #include "Linear_lists.h"
 #define ERR_ARGS 1
-
 #define MAX_UDP_SEND 1
 
 struct pseudo_header
@@ -29,35 +28,37 @@ struct pseudo_header
     u_int16_t tcp_length;
 };
 
-/*
- * Tato funkce slouží pro výpočet kontrolního součtu a není mým dílem.
- *
- * */
+typedef struct {
+    char* udp_range;
+    char* tcp_range;
+    char* interface_name;
+    char* domname_or_ipaddr;
+} Input_args;
+
+//Global variables are needed here; err for error handling and pcap_handles because of alarm. 
+int err = 0;
+pcap_t *pcap_handle;
+pcap_t *pcap_handle_udp;
+
+//Tato funkce neni mym dilem. Pro podrobnější informace si prosím prohlédněte dokumentaci.
 unsigned short csum(unsigned short *buf, int nwords)
-
 {       //
-
     unsigned long sum;
-
     for(sum=0; nwords>0; nwords--)
-
         sum += *buf++;
-
     sum = (sum >> 16) + (sum &0xffff);
-
     sum += (sum >> 16);
-
     return (unsigned short)(~sum);
 
 }
+
+//Tato funkce neni mym dilem. Pro podrobnější informace si prosím prohlédněte dokumentaci.
 unsigned short checksum2(const char *buf, unsigned size)
 {
     unsigned long long sum = 0;
     const unsigned long long *b = (unsigned long long *) buf;
-
     unsigned t1, t2;
     unsigned short t3, t4;
-
     /* Main loop - 8 bytes at a time */
     while (size >= sizeof(unsigned long long))
     {
@@ -66,7 +67,6 @@ unsigned short checksum2(const char *buf, unsigned size)
         if (sum < s) sum++;
         size -= 8;
     }
-
     /* Handle tail less than 8-bytes long */
     buf = (const char *) b;
     if (size & 4)
@@ -76,7 +76,6 @@ unsigned short checksum2(const char *buf, unsigned size)
         if (sum < s) sum++;
         buf += 4;
     }
-
     if (size & 2)
     {
         unsigned short s = *(unsigned short *) buf;
@@ -84,14 +83,12 @@ unsigned short checksum2(const char *buf, unsigned size)
         if (sum < s) sum++;
         buf += 2;
     }
-
     if (size)
     {
         unsigned char s = *(unsigned char *) buf;
         sum += s;
         if (sum < s) sum++;
     }
-
     /* Fold down to 16 bits */
     t1 = sum;
     t2 = sum >> 32;
@@ -105,16 +102,6 @@ unsigned short checksum2(const char *buf, unsigned size)
     return ~t3;
 }
 
-typedef struct {
-    char* udp_range;
-    char* tcp_range;
-    char* interface_name;
-    char* domname_or_ipaddr;
-} Input_args;
-
-int err = 0;
-pcap_t *pcap_handle;
-pcap_t *pcap_handle_udp;
 Input_args check_args(int argc, char** argv)
 {
     int opt;
@@ -127,31 +114,24 @@ Input_args check_args(int argc, char** argv)
                         {"pt",  required_argument,    0, 't'},
                         {"pu",  required_argument, 0, 'u'}
                 };
-
         int option_index = 0;
-
         opt = getopt_long_only (argc, argv, "i:u:t:", long_options, &option_index);
         if(opt == -1)
             break;
-
         switch(opt)
         {
             case 'i':
-                // printf("%c: %s\n", opt, optarg);
                 input_args.interface_name = optarg;
                 break;
             case 't':
-                //printf("%c: %s\n", opt, optarg);
                 input_args.tcp_range = optarg;
                 break;
             case 'u':
                 input_args.udp_range = optarg;
-                //printf("%c: %s\n", opt, optarg);
                 break;
             default:
                 fprintf(stderr, "Error: Unknown input argument. Please check your input.\n");
         }
-
     }
     if(optind < argc) {
         input_args.domname_or_ipaddr = argv[optind]; //next arguments ignored
@@ -164,14 +144,14 @@ Input_args check_args(int argc, char** argv)
     }
     return input_args;
 }
-//http://minirighi.sourceforge.net/html/udp_8c-source.html
+
+//Tato funkce neni mym dilem. Pro podrobnější informace si prosím prohlédněte dokumentaci.
 uint16_t udp_checksum(const void *buff, size_t len, in_addr_t src_addr, in_addr_t dest_addr)
 {
     const uint16_t *buf=buff;
     uint16_t *ip_src=(void *)&src_addr, *ip_dst=(void *)&dest_addr;
     uint32_t sum;
     size_t length=len;
-
     // Calculate the sum                                            //
     sum = 0;
     while (len > 1)
@@ -181,38 +161,32 @@ uint16_t udp_checksum(const void *buff, size_t len, in_addr_t src_addr, in_addr_
             sum = (sum & 0xFFFF) + (sum >> 16);
         len -= 2;
     }
-
     if ( len & 1 )
         // Add the padding if the packet lenght is odd          //
         sum += *((uint8_t *)buf);
-
     // Add the pseudo-header                                        //
     sum += *(ip_src++);
     sum += *ip_src;
-
     sum += *(ip_dst++);
     sum += *ip_dst;
-
     sum += htons(IPPROTO_UDP);
     sum += htons(length);
-
     // Add the carries                                              //
     while (sum >> 16)
         sum = (sum & 0xFFFF) + (sum >> 16);
-
     // Return the one's complement of sum                           //
     return ( (uint16_t)(~sum)  );
 }
 void set_udp_header(struct udphdr *udp, int source_port, int *dest_port, char *src_addr, char *dst_addr)
 {
     udp->source= htons(source_port);
-    udp->dest = htons(*dest_port); //TODO tohle menit
-    //printf("delka: %d", sizeof(struct udphdr));
+    udp->dest = htons(*dest_port);
     udp->len = htons(sizeof(struct udphdr));
     udp->check = udp_checksum(udp, sizeof(struct udphdr), inet_addr(src_addr), inet_addr(dst_addr));
 }
 
-Linlist_string *get_string_range(char *str) {
+Linlist_string *get_string_range(char *str) 
+{
     if(str == NULL)
         return NULL;
     Linlist_string* temp_list = malloc(sizeof(Linlist_string));
@@ -247,7 +221,9 @@ Linlist_string *get_string_range(char *str) {
 
     return temp_list;
 }
-Linlist_int *get_range(Linlist_string *list) {
+
+Linlist_int *get_range(Linlist_string *list) 
+{
     if(list == NULL)
         return NULL;
     Linlist_int* range = malloc(sizeof(Linlist_int));
@@ -262,12 +238,9 @@ Linlist_int *get_range(Linlist_string *list) {
     }
     return range;
 }
-void alarm_handler(int sig) {
+void stop_pcap(int signal_number) 
+{
     pcap_breakloop(pcap_handle);
-}
-
-void alarm_handler2(int sig) {
-    pcap_breakloop(pcap_handle_udp);
 }
 
 char* get_dst_addr(char *domain_name)
@@ -333,6 +306,7 @@ char* get_src_addr(char *interface_name, char *netmask)
     freeifaddrs(backup);
     return src_addr;
 }
+
 void set_pcap_handle(char * interface_name,char *rule)
 {
     char errbuf[PCAP_ERRBUF_SIZE];
@@ -360,13 +334,14 @@ void set_pcap_handle(char * interface_name,char *rule)
         exit(43);
     }
 }
-void set_tcp_header(struct tcphdr *tcp_header, int port, struct sockaddr_in sendto_src) {
+
+void set_tcp_header(struct tcphdr *tcp_header, int port, struct sockaddr_in sendto_src) 
+{
     tcp_header->source = sendto_src.sin_port;
     tcp_header->dest = htons(port);
     tcp_header->seq = htonl(1); //WTF
     tcp_header->ack_seq = 0;
-    tcp_header->doff = 5;	//tcp header size
-//nastaveni "flagu"
+    tcp_header->doff = 5;   //tcp header size
     tcp_header->fin=0;
     tcp_header->syn=1;
     tcp_header->rst=0;
@@ -376,15 +351,13 @@ void set_tcp_header(struct tcphdr *tcp_header, int port, struct sockaddr_in send
     tcp_header->res1 = 0;
     tcp_header->res2 = 0;
     tcp_header->urg_ptr = 0;
-    tcp_header->window = htons(64240);	/* maximum allowed window size */
-    tcp_header->check = 0;	//leave checksum 0 now, filled later by pseudo header
+    tcp_header->window = htons(64240);  /* maximum allowed window size */
+    tcp_header->check = 0;  //leave checksum 0 now, filled later by pseudo header
     tcp_header->th_urp = 0;
-
 }
 
 void set_ip_header(struct ip *ip_header, char *src_addr, char *dst_addr, int size, int tcp)
 {
-    //ip header here
     ip_header->ip_v = 4;
     ip_header->ip_hl = sizeof*ip_header >> 2;
     ip_header->ip_tos = 0;
@@ -397,12 +370,9 @@ void set_ip_header(struct ip *ip_header, char *src_addr, char *dst_addr, int siz
     else
         ip_header->ip_p = IPPROTO_UDP;
     ip_header->ip_sum = 0;
-
     ip_header->ip_src.s_addr = inet_addr(src_addr);
     ip_header->ip_dst.s_addr = inet_addr(dst_addr);
-
-    ip_header->ip_sum = csum((unsigned short *)ip_header, size); //druhá možnost: velikost iphlavy + protokolhlavy
-
+    ip_header->ip_sum = csum((unsigned short *)ip_header, size); 
 }
 
 
@@ -414,6 +384,7 @@ int main(int argc, char** argv )
     {
        exit(ERR_ARGS);
     }
+    
     //why both string and int? Need both types (almost) every time.
     //Now I do not need to repeatedly convert from one type to another.
     Linlist_string *string_TCP_range = get_string_range(input_args.tcp_range);
@@ -495,13 +466,11 @@ int main(int argc, char** argv )
             arrived_packet = pcap_next(pcap_handle, header);
             if(arrived_packet)
             {
-                //printf("Packet arrived! %d\n", header->len);
                 struct ip*sniffed_ip = (struct ip*)(arrived_packet+ 14); //14 == sizeof(sniff_eth)
                 struct tcphdr* sniffed_tcp = (struct tcphdr*)(arrived_packet+14+ sizeof(struct ip));
 
                 char * s_ip = malloc(sizeof(char)*39);
                 inet_ntop(AF_INET, &(sniffed_ip->ip_src), s_ip, 39);
-                //printf("sniffed IP: %s, tcp ack: %u, bla :) %u %u\n",s_ip, sniffed_tcp->ack, sniffed_tcp->source, tcp_header->dest);
                 if(sniffed_tcp->source == tcp_header->dest)
                 {
                     if(sniffed_tcp->ack && !sniffed_tcp->rst)
@@ -523,13 +492,11 @@ int main(int argc, char** argv )
             }
         }//end of while42
             pcap_close(pcap_handle);
-
         //set new ports for next cycle
          TCP_port = int_read(TCP_range);
          TCP_str_port = string_read(string_TCP_range);
     }
     close(sock); //end of TCP scanning
-
 
     //Start of UDP scanning
     int *UDP_port = int_read(UDP_range);
@@ -593,11 +560,11 @@ int main(int argc, char** argv )
         while(42)
         {
             alarm(1);
-            signal(SIGALRM, alarm_handler);
+            signal(SIGALRM, stop_pcap);
             arrived_packet = pcap_next(pcap_handle, header);
             if(arrived_packet)
             {
-                struct ip*sniffed_ip = (struct ip*)(arrived_packet+ 14); //14 == sizeof(sniff_eth)
+                struct ip*sniffed_ip = (struct ip*)(arrived_packet + 14); //14 == sizeof(sniff_eth)
                 struct icmphdr* sniffed_icmp = (struct icmphdr*)(arrived_packet+14+sizeof(struct ip));
                 char * s_ip = malloc(sizeof(char)*39);
 
@@ -617,7 +584,6 @@ int main(int argc, char** argv )
                 }
                 else
                 {
-                    //printf("gimme second chance!\n");
                     repeat++;
                     if(sendto(sock, datagram, sizeof(datagram), 0, (struct sockaddr *)&sendto_addr, sizeof(sendto_addr)) < 0)
                     {
@@ -632,5 +598,5 @@ int main(int argc, char** argv )
         UDP_port = int_read(UDP_range);
         string_UDP_port = string_read(string_UDP_range);
     }
-    exit(0);
+    return 0;
 }

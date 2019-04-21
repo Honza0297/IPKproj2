@@ -1,0 +1,81 @@
+\documentclass[a4paper, 11pt]{article}
+
+\usepackage[czech]{babel}
+\usepackage[text={17cm,24cm}, top=3cm, left=2cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[IL2]{fontenc}
+
+\usepackage{url}
+\DeclareUrlCommand\url{\def\UrlLeft{<}\def\UrlRight{>} \urlstyle{tt}}
+
+
+\begin{document}
+%Úvodní strana
+\begin{titlepage}
+	\begin{center}
+		\Huge \textsc{Vysoké učení technické v~Brně}\\
+		\huge \textsc{Fakulta informačních technologií}\\
+		\vspace{\stretch{0,381}}
+		\LARGE Typografie a~publikování – 4.projekt\\
+		\Huge {Bibliografické citace}\\
+		\vspace{\stretch{0,619}}
+		\Large\today \hfill Jan Beran
+	 \end{center}
+\end{titlepage}
+
+\newpage %stránka s textem
+\section*{Typografie}
+\subsection*{Typografie obecně}
+Typografie je především nauka o tištěném písmu a o grafikcé podobě tiskoviny (a nejen té). Historie typografie sahá 500 let do minulosti, kdy Johannes Gutenberg vynalezl knihtisk, ale počítáme-li i~kaligrafii, pak existuje již několik tisíc let \cite{Kocicka:Prakticka}. Během historie vzniklo mnoho typů písem a mnoho dalších vzniká i~nyní (viz \cite{Williams:Non-Designer}), a spolu s písmem se mění převládající směr, kterým se typografie ubírá. Například v polovině minulého století směřovala tehdejší typografie k \uv{\textit{jednoduchosti a čitelnosti textu, která je v souladu s přirozenými pravidly lidského oka}} \cite{Kibbee:Typo48}. Dnešní typografie je ovlivněna mj. stále se~zlepšujícím rozlišením displejů u elektroniky. Dnes již není nutné dbát v první řadě na čitelnost, nyní se používají i písma, která by na displejích a monitorech z doby před dvaceti lety byla nečitelná.
+
+Typografie ale není jen o grafické podobě dlouhých textů, její nedílnou součástí je i grafická podoba například názvů a log firem a organizací. Například v poslední době si nechala vytvořit nové logo i~Masarykova univerzita \cite{TohleLogoSeMiNelibiAStareByloLepsi}.
+ \subsection*{Typografie v digitální éře}
+Spolu s nástupem informačních technologií se také změnila pravidla pro elektronickou typografii, zvláště co se týká tvorby webových stránek, viz například \cite{Strizver:DiffPrintvsWeb}, pro informace v češtině doporučuji tuto bakalářskou práci, obsahující kompletní přehled české digitální typografie: \cite{BP:SirucekPravidla}. 
+S příchodem počítačů vyvstává i otázka tvorby textů. V dnešní době máme k dispozici nespočet textových procesorů, počínaje aplikací Microsoft Word, přes online služby jako Google Docs, které nabízejí i online uchovávání dokumentů, až po specializované nástroje typu \LaTeX. Pro bližší informace a porovnání několika vybraných aplikací doporučuji pročíst bakalářskou práci: \cite{BP:LukesEditory}.
+Pro sazbu složitějších a odborných textů se většinou používá systém \LaTeX, který dokáže bez problémů vysázet i složité rovnice, matice a další prvky, se kterými mají aplikace jako Microsoft Word nebo Google Docs problémy. Pro posledně jmenovanou aplikaci nicméně existuje editor \LaTeX u jménem Latex Lab \cite{Cizek:LatexLab}. Na druhou stranu, \LaTeX není ani zdaleka intuitivní a do jisté míry se podobá programovacímu jazyku. Naprosté základy se nicméně dají naučit za pár hodin, ovšem sázení některých složitějších struktur může dělat problém i zkušenějšímu uživateli \cite{Latex:Tricks}.
+
+Nedílnou součástí tvorby většiny odborných textů jsou i citace a s nimi spojené normy a etika. V této oblasti má ovšem \LaTeX { }a jeho část pro bibliografické citace \textsc{Bib}\TeX mezery. Standardní styly často nemají podporu češtiny a ignorují například ISBN \cite{Martinek:Latex}. Já používám Český styl pro \textsc{Bib}\TeX { }od~Davida Martínka, šířený pod licencí The LaTeX project public license \footnote{Dostupný z http://www.fit.vutbr.cz/~martinek/latex/czechiso.html}. 
+
+
+\newpage % Použité zdroje
+\bibliographystyle{czechiso}
+\def\refname{Použité zdroje}
+\bibliography{citaceproj4}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
