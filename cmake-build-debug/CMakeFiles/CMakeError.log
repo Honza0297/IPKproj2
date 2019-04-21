@@ -1,0 +1,19 @@
+Determining if the function pcap_get_pfring_id exists failed with the following output:
+Change Dir: /home/Honza0297/CLionProjects/IPKproj2/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_49e75/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_49e75.dir/build.make CMakeFiles/cmTC_49e75.dir/build
+gmake[1]: Entering directory '/home/Honza0297/CLionProjects/IPKproj2/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_49e75.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pcap_get_pfring_id   -std=gnu99 -o CMakeFiles/cmTC_49e75.dir/CheckFunctionExists.c.o   -c /opt/clion-2019.1/bin/cmake/linux/share/cmake-3.13/Modules/CheckFunctionExists.c
+Linking C executable cmTC_49e75
+/opt/clion-2019.1/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_49e75.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pcap_get_pfring_id    CMakeFiles/cmTC_49e75.dir/CheckFunctionExists.c.o  -o cmTC_49e75 /usr/lib64/libpcap.so 
+/usr/bin/ld: CMakeFiles/cmTC_49e75.dir/CheckFunctionExists.c.o: in function `main':
+CheckFunctionExists.c:(.text+0x10): undefined reference to `pcap_get_pfring_id'
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_49e75.dir/build.make:88: cmTC_49e75] Error 1
+gmake[1]: Leaving directory '/home/Honza0297/CLionProjects/IPKproj2/cmake-build-debug/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:121: cmTC_49e75/fast] Error 2
+
+

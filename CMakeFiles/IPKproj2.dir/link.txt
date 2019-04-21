@@ -1,0 +1,1 @@
+/usr/bin/cc    CMakeFiles/IPKproj2.dir/main.c.o CMakeFiles/IPKproj2.dir/Linear_lists.c.o  -o IPKproj2 /usr/lib64/libpcap.so 

@@ -205,12 +205,12 @@ Linlist_string *get_string_range(char *str)
 
         for(int n = start; n < stop+1; n++)
         {
-            char temp_string[5];
+            char *temp_string = malloc(sizeof(char)*6);
             memset (temp_string, 0, 5);
             sprintf(temp_string, "%d", n);
             string_write(temp_string,temp_list);
         }
-        free(temp_list);
+        //free(temp_list);
         return temp_list;
     }
     while(splitted != NULL)
@@ -462,7 +462,7 @@ int main(int argc, char** argv )
         while(42)
         {
             alarm(1);
-            signal(SIGALRM, alarm_handler);
+            signal(SIGALRM, stop_pcap);
             arrived_packet = pcap_next(pcap_handle, header);
             if(arrived_packet)
             {

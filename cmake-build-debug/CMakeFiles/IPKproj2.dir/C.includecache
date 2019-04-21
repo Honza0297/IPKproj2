@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/Honza0297/CLionProjects/IPKproj2/Linear_lists.h
+
+/home/Honza0297/CLionProjects/IPKproj2/main.c
+stdio.h
+-
+stdlib.h
+-
+getopt.h
+-
+string.h
+-
+sys/socket.h
+-
+unistd.h
+-
+netinet/in.h
+-
+netdb.h
+-
+netinet/ip.h
+-
+netinet/tcp.h
+-
+netinet/ip_icmp.h
+-
+netinet/udp.h
+-
+ifaddrs.h
+-
+arpa/inet.h
+-
+pcap.h
+-
+signal.h
+-
+Linear_lists.h
+/home/Honza0297/CLionProjects/IPKproj2/Linear_lists.h
+

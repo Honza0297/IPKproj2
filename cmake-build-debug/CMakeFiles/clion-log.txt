@@ -1,6 +1,16 @@
-"C:\Program Files\JetBrains\CLion 2018.3\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" C:\Users\janbe\Sources\CLion\IPKproj2
-CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
-  CMake 3.13 or higher is required.  You are running version 3.12.3
-
-
--- Configuring incomplete, errors occurred!
+/opt/clion-2019.1/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/Honza0297/CLionProjects/IPKproj2
+-- The C compiler identification is GNU 8.3.1
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Found PCAP: /usr/lib64/libpcap.so  
+-- Performing Test PCAP_LINKS_SOLO
+-- Performing Test PCAP_LINKS_SOLO - Success
+-- Looking for pcap_get_pfring_id
+-- Looking for pcap_get_pfring_id - not found
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/Honza0297/CLionProjects/IPKproj2/cmake-build-debug
