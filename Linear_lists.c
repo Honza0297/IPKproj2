@@ -23,6 +23,8 @@ void string_write(char *data, Linlist_string *list)
 
 char* string_read(Linlist_string *list)
 {
+    if(list == NULL)
+        return NULL;
     char * ret = NULL;
     if(list->first)
     {
@@ -55,6 +57,8 @@ void int_write(const int* data, Linlist_int *list)
 }
 int *int_read(Linlist_int *list)
 {
+    if(list == NULL)
+        return NULL;
     int * ret = NULL;
     if(list->first)
     {

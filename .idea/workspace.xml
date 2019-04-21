@@ -12,6 +12,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="373f919f-ccae-4b15-8dd9-d6cdb03a0373" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Linear_lists.c" beforeDir="false" afterPath="$PROJECT_DIR$/Linear_lists.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/IPKproj2.dir/Linear_lists.c.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/IPKproj2.dir/Linear_lists.c.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/IPKproj2.dir/main.c.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/IPKproj2.dir/main.c.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/IPKproj2" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/IPKproj2" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -30,8 +35,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="631" column="49" selection-start-line="631" selection-start-column="49" selection-end-line="631" selection-end-column="49" />
+            <state relative-caret-position="30">
+              <caret line="600" column="14" lean-forward="true" selection-start-line="600" selection-start-column="14" selection-end-line="600" selection-end-column="14" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -40,10 +45,17 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/include/netinet/ip_icmp.h">
+        <entry file="file:///usr/include/netinet/tcp.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-225" />
+            <state relative-caret-position="135">
+              <caret line="130" column="13" selection-start-line="130" selection-start-column="13" selection-end-line="130" selection-end-column="13" />
+            </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file:///usr/include/netinet/ip_icmp.h">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -58,7 +70,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../Stažené/IPK-project2-master/ipk-scan.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
+            <state relative-caret-position="6300">
               <caret line="420" column="12" selection-start-line="420" selection-start-column="12" selection-end-line="420" selection-end-column="14" />
             </state>
           </provider>
@@ -88,8 +100,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Linear_lists.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="123">
-              <caret line="23" column="6" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
+            <state relative-caret-position="-676">
+              <caret line="26" column="20" lean-forward="true" selection-start-line="26" selection-start-column="20" selection-end-line="26" selection-end-column="20" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -110,27 +122,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>err</find>
-      <find>pcap_</find>
-      <find>hton</find>
-      <find>htons</find>
-      <find>htons(</find>
-      <find>packet =</find>
-      <find>packet</find>
-      <find>tcp_he</find>
-      <find>123</find>
-      <find>327</find>
-      <find>htons(8</find>
-      <find>input_args</find>
-      <find>tcp_ra</find>
-      <find>TCP</find>
-      <find>TCP_rang</find>
-      <find>strt</find>
       <find>get_r</find>
       <find>get_range(</find>
       <find>memse</find>
       <find>get_Str</find>
-      <find>rule</find>
       <find>port</find>
       <find>ip_he</find>
       <find>set_</find>
@@ -140,6 +135,23 @@
       <find>checksum2</find>
       <find>udp_c</find>
       <find>pcap_op</find>
+      <find>sendto_src</find>
+      <find>set_T</find>
+      <find>set_u</find>
+      <find>setf</find>
+      <find>pcap_h</find>
+      <find>err during</find>
+      <find>rule</find>
+      <find>pcap</find>
+      <find>set_pc</find>
+      <find>set_pcap</find>
+      <find>arrived</find>
+      <find>pcap_</find>
+      <find>set_p</find>
+      <find>alarm</find>
+      <find>int_read</find>
+      <find>set_ud</find>
+      <find>&gt;rst</find>
     </findStrings>
     <replaceStrings>
       <replace>temp_ip_addr</replace>
@@ -153,9 +165,9 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/Linear_lists.h" />
-        <option value="$PROJECT_DIR$/Linear_lists.c" />
         <option value="$PROJECT_DIR$/vzor.c" />
         <option value="$PROJECT_DIR$/vzor" />
+        <option value="$PROJECT_DIR$/Linear_lists.c" />
         <option value="$PROJECT_DIR$/main.c" />
       </list>
     </option>
@@ -172,6 +184,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -188,7 +201,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -215,7 +227,7 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="IPKproj2" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-i wlp8s0b1 -pu 80  -pt 80 www.nemeckay.net" PASS_PARENT_ENVS_2="true" PROJECT_NAME="IPKproj2" TARGET_NAME="IPKproj2" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="IPKproj2" RUN_TARGET_NAME="IPKproj2">
+    <configuration name="IPKproj2" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-i wlp8s0b1 -pu 22,80,1000,1001,1002,1003  46.28.109.159" PASS_PARENT_ENVS_2="true" PROJECT_NAME="IPKproj2" TARGET_NAME="IPKproj2" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="IPKproj2" RUN_TARGET_NAME="IPKproj2">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -250,27 +262,30 @@
       <workItem from="1555588088540" duration="9871000" />
       <workItem from="1555608241199" duration="1228000" />
       <workItem from="1555674651426" duration="15422000" />
+      <workItem from="1555750473648" duration="3231000" />
+      <workItem from="1555842142347" duration="6910000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="98747000" />
+    <option name="totallyTimeSpent" value="108888000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="27" width="1366" height="741" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.023484848" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.023449318" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.29801324" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3576159" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32840723" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.42692938" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.08210181" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
-      <window_info anchor="bottom" id="Messages" order="8" weight="0.35099337" />
+      <window_info anchor="bottom" id="Messages" order="8" weight="0.12643678" />
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="11" />
@@ -291,6 +306,11 @@
           <url>file://$PROJECT_DIR$/vzor</url>
           <line>194</line>
           <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/main.c</url>
+          <line>554</line>
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -313,6 +333,23 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file:///usr/include/netinet/ip_icmp.h">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file:///usr/include/netinet/udp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="67" selection-start-line="21" selection-start-column="67" selection-end-line="21" selection-end-column="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Stažené/IPK-project2-master/ipk-scan.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6300">
+          <caret line="420" column="12" selection-start-line="420" selection-start-column="12" selection-end-line="420" selection-end-column="14" />
+        </state>
+      </provider>
     </entry>
     <entry file="file:///usr/include/pcap/pcap.h">
       <provider selected="true" editor-type-id="text-editor">
@@ -338,39 +375,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/include/bits/signum-generic.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="121">
+          <caret line="62" column="8" selection-start-line="62" selection-start-column="8" selection-end-line="62" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Linear_lists.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
-          <caret line="23" column="6" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
+        <state relative-caret-position="-676">
+          <caret line="26" column="20" lean-forward="true" selection-start-line="26" selection-start-column="20" selection-end-line="26" selection-end-column="20" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../Stažené/IPK-project2-master/ipk-scan.c">
+    <entry file="file:///usr/include/netinet/tcp.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="420" column="12" selection-start-line="420" selection-start-column="12" selection-end-line="420" selection-end-column="14" />
+        <state relative-caret-position="135">
+          <caret line="130" column="13" selection-start-line="130" selection-start-column="13" selection-end-line="130" selection-end-column="13" />
         </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/netinet/udp.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="67" selection-start-line="21" selection-start-column="67" selection-end-line="21" selection-end-column="67" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/netinet/ip_icmp.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-225" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="631" column="49" selection-start-line="631" selection-start-column="49" selection-end-line="631" selection-end-column="49" />
+        <state relative-caret-position="30">
+          <caret line="600" column="14" lean-forward="true" selection-start-line="600" selection-start-column="14" selection-end-line="600" selection-end-column="14" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
